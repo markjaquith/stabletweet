@@ -4,19 +4,22 @@ const VERSION = 1;
 
 function html(content) {
 	return `
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-</head>
-<body>${content}
-</body>
-</html>`
+		<!DOCTYPE html>
+		<html>
+			<head>
+				<meta charset="UTF-8">
+			</head>
+			<body>
+				${content}
+			</body>
+		</html>
+	`
 }
 
 addEventListener('fetch', event => {
 	event.respondWith(handleRequest(event.request))
 })
+
 /**
  * Respond with hello worker text
  * @param {Request} request
@@ -31,6 +34,27 @@ async function handleRequest(request) {
 				'content-type': 'text/plain',
 			}
 		})
+	}
+
+	if (requestUrl.pathname.startsWith('/exists')) {
+		const tweetId = parseInt(tweetUrl.split('?').shift().split('/').pop(), 10)
+		let exists = await TWEET_EXISTS.get(VERSION + ':' + tweetId)
+		if (exists !== null) {
+			exists = !!parseInt(exists, 10)
+		} else {
+			exists = await tweetExists(tweetUrl)
+			await TWEET_EXISTS.put(VERSION + ':' + tweetId, exists ? "1" : "0")
+		}
+		
+		if (exists) {
+			return new Response("true", {
+				status: 200,
+			})
+		} else {
+			return new Response("false", {
+				status: 404,
+			})
+		}
 	}
 
 	const {
@@ -84,4 +108,9 @@ async function getTweet(tweetUrl) {
 	}
 
 	return data
+}
+
+async function tweetExists(tweetUrl) {
+	const response = await fetch(`https://publish.twitter.com/oembed?url=${tweetUrl}`)
+	return response.ok
 }
