@@ -6,3 +6,7 @@ workers_dev = true
 route = ""
 zone_id = ""
 compatibility_date = "2022-04-06"
+
+kv_namespaces = [
+	{ binding = "TWEETS", preview_id = "6c391bab693044aca5bb8ee8c50c6def", id = "8b16132d5469414d8d324965131e36cd" }
+]
