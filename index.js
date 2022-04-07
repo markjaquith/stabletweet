@@ -1,6 +1,6 @@
 import { decode } from 'html-entities'
 
-const VERSION = 1;
+const VERSION = 2;
 
 function html(content) {
 	return `
@@ -26,7 +26,8 @@ addEventListener('fetch', event => {
  */
 async function handleRequest(request) {
 	const requestUrl = new URL(request.url);
-	const tweetUrl = requestUrl.searchParams.get('url') || null
+	let tweetUrl = requestUrl.searchParams.get('url') || null
+	
 	if (!tweetUrl) {
 		return new Response('You must pass in a url parameter with the URL of the tweet', {
 			status: 404,
@@ -36,8 +37,10 @@ async function handleRequest(request) {
 		})
 	}
 
+	tweetUrl = tweetUrl.split('?').shift()
+
 	if (requestUrl.pathname.startsWith('/exists')) {
-		const tweetId = parseInt(tweetUrl.split('?').shift().split('/').pop(), 10)
+		const tweetId = tweetUrl.split('/').pop()
 		let exists = await TWEET_EXISTS.get(VERSION + ':' + tweetId)
 		if (exists !== null) {
 			exists = !!parseInt(exists, 10)
@@ -45,14 +48,20 @@ async function handleRequest(request) {
 			exists = await tweetExists(tweetUrl)
 			await TWEET_EXISTS.put(VERSION + ':' + tweetId, exists ? "1" : "0")
 		}
+
+		const headers = {
+			'Access-Control-Allow-Origin': '*',
+		}
 		
 		if (exists) {
 			return new Response("true", {
 				status: 200,
+				headers,
 			})
 		} else {
 			return new Response("false", {
 				status: 404,
+				headers,
 			})
 		}
 	}
@@ -74,7 +83,7 @@ async function handleRequest(request) {
 
 async function getTweet(tweetUrl) {
 	console.log(`Fetching ${tweetUrl}`)
-	const tweetId = parseInt(tweetUrl.split('?').shift().split('/').pop(), 10)
+	const tweetId = tweetUrl.split('/').pop()
 	console.log({ tweetId })
 	let data = await TWEETS.get(VERSION + ':' + tweetId)
 
@@ -112,5 +121,6 @@ async function getTweet(tweetUrl) {
 
 async function tweetExists(tweetUrl) {
 	const response = await fetch(`https://publish.twitter.com/oembed?url=${tweetUrl}`)
+	console.log(response)
 	return response.ok
 }
