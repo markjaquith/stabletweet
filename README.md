@@ -32,7 +32,8 @@ Tweets that don't exist.
 Here is an example script to use this Worker to decide whether to let Twitter
 render tweets:
 
-```javascript
+```html
+<script>
 document.addEventListener('DOMContentLoaded', () => {
 	// EDIT THIS ENDPOINT — no trailing slash
 	const WORKER_ENDPOINT = 'https://stabletweet.YOURNAME.workers.dev'
@@ -61,4 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		})
 	})
 })
+</script>
 ```
+
+This should be placed on your site before any embedded Tweets, to maximize the
+chances that it gets to act before Twitter's Widget script.
