@@ -1,5 +1,5 @@
 name = "stabletweet"
-type = "webpack"
+type = "javascript"
 
 account_id = ""
 workers_dev = true
@@ -8,6 +8,5 @@ zone_id = ""
 compatibility_date = "2022-04-06"
 
 kv_namespaces = [
-	{ binding = "TWEETS", preview_id = "6c391bab693044aca5bb8ee8c50c6def", id = "8b16132d5469414d8d324965131e36cd" },
 	{ binding = "TWEET_EXISTS", preview_id = "4e852aa66b904e8bb45597494d39aa82", id = "677982c68fe04777b8cff7cdb30ea4cb" },
 ]
