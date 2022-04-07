@@ -1,13 +1,10 @@
 const VERSION = 3;
+const TTL_HOURS = 6;
 
 addEventListener('fetch', event => {
 	event.respondWith(handleRequest(event.request))
 })
 
-/**
- * Respond with hello worker text
- * @param {Request} request
- */
 async function handleRequest(request) {
 	const requestUrl = new URL(request.url);
 
@@ -66,7 +63,7 @@ async function tweetExists(tweetUrl) {
 	} else {
 		const response = await fetch(`https://publish.twitter.com/oembed?url=${tweetUrl}`)
 		exists = response.ok
-		await TWEET_EXISTS.put(VERSION + ':' + tweetId, exists ? "1" : "0", { expirationTtl: 60 * 60 * 6 })
+		await TWEET_EXISTS.put(VERSION + ':' + tweetId, exists ? "1" : "0", { expirationTtl: 60 * 60 * TTL_HOURS })
 	}
 
 	return exists
