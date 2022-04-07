@@ -55,7 +55,13 @@ async function tweetExists(tweetUrl) {
 		return false
 	}
 
-	const tweetId = tweetUrl.split('/').pop()
+	const tweetId = tweetUrl.split('/').pop().replace(/[^0-9]/g, '')
+	console.log({ tweetId })
+
+	if (`${tweetId}`.length < 10) {
+		return false
+	}
+
 	let exists = await TWEET_EXISTS.get(VERSION + ':' + tweetId)
 
 	if (exists !== null) {
