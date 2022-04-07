@@ -5,12 +5,14 @@ A Cloudflare Worker proxy for checking whether a tweet exists.
 As of April 2022, Twitter embeds (which are blockquote elements with a special
 HTML class) for Tweets that have been deleted or made private will not fall
 back to just showing the blockquote, but will render an empty tweet, preventing
-people see what you'd published.
+people from seeing the content of the tweet that had previously been published
+on your site. This destroys editorial context.
 
-So this service can be used in conjunction with some JavaScript that only
+This service can be used in conjunction with some JavaScript that only
 lets Twitter render tweets that are still available.
 
-See http://www.kevinmarks.com/twittereditsyou.html for more info.
+See http://www.kevinmarks.com/twittereditsyou.html for more info about Twitter's
+change and its implications.
 
 ## Installation
 
@@ -24,6 +26,8 @@ See http://www.kevinmarks.com/twittereditsyou.html for more info.
 You can then access `{yourWorkerDomain}/exists?url={tweetUrl}` which will return
 a `200` response (and `true`) for Tweets that exist, and `404` (and `false`) for
 Tweets that don't exist.
+
+## Script
 
 Here is an example script to use this Worker to decide whether to let Twitter
 render tweets:
